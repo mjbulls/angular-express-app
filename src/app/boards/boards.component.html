@@ -1,0 +1,23 @@
+<div class="container">
+  <div>
+      <form class="well" (submit)="addBoard($event)">
+          <div class="form-group">
+            <input type="text" [(ngModel)]="title" name="title" class="form-control" placeholder="Title">
+            <textarea [(ngModel)]="content" name="content" class="form-control" rows="3"  placeholder="Content"></textarea>
+            <input type="hidden" [(ngModel)]="id" />
+          </div>
+          <button [disabled]="!title || !content" class="btn btn-primary right">{{ id ? '수정' : '등록' }}</button>
+          <button (click)="reset()" class="btn btn-danger right">취소</button>
+        </form>
+  </div>
+  <br />
+  <div class="row" *ngFor="let board of boards">
+    <div class="card card-block">
+      <h4 class="card-title">{{ board.title }}</h4>
+      <p class="card-text">{{board.content}}</p>
+      <p class="card-text">{{board.regDt}}</p>
+      <button class="btn btn-success" (click)="update(board._id)">수정</button>
+      <button class="btn btn-danger" (click)="deleteBoard(board._id)">삭제</button>
+    </div>
+  </div>
+</div>

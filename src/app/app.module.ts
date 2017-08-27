@@ -10,24 +10,31 @@ import { AppComponent } from './app.component';
 import { PostsComponent } from './posts/posts.component';
 
 import { PostsService } from './posts.service';
+import { BoardsComponent } from './boards/boards.component';
+import { BoardsService } from './boards.service';
 
 // Define the routes
 const ROUTES = [
   {
     path: '',
-    redirectTo: 'posts',
+    redirectTo: 'boards',
     pathMatch: 'full'
   },
   {
     path: 'posts',
     component: PostsComponent
+  },
+  {
+    path : 'boards',
+    component : BoardsComponent
   }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostsComponent
+    PostsComponent,
+    BoardsComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +42,7 @@ const ROUTES = [
     HttpModule,
     RouterModule.forRoot(ROUTES) // Add routes to the app
   ],
-  providers: [PostsService],
+  providers: [PostsService, BoardsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
