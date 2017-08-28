@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongojs = require('mongojs');
-var db = mongojs('mongodb://dbuser:dbuser@ds159013.mlab.com:59013/mytasklist_richard', ['boards']);
+const config = require('../../config');
+const db = mongojs(config.mongodbUri, ['boards']);
+const Board = require('../../models/board')
 
 // declare axios for making http requests
 const axios = require('axios');
@@ -27,7 +29,7 @@ router.get('/posts', (req, res) => {
 
 router.get('/boards', (req, res, next) => {
 
-  db.boards.find((err, boards) => {
+  Board.find((err, boards) => {
     if (err) {
       res.send(err);
     } else {
@@ -39,7 +41,7 @@ router.get('/boards', (req, res, next) => {
 
 router.get('/board/:id', (req, res, next) => {
 
-  db.boards.findOne({_id: mongojs.ObjectId(req.params.id)}, (err, board) => {
+  Board.findOne({_id: mongojs.ObjectId(req.params.id)}, (err, board) => {
     if(err){
         res.send(err);
     }
@@ -53,7 +55,7 @@ router.post('/board', (req, res, next) => {
   if (!board.title || !board.content) {
     res.status(400).send('잘못된 요청');
   } else {
-    db.boards.save(board, (err, board) => {
+    Board.create(board, (err, board) => {
       if(err){
           res.send(err);
       }
@@ -67,7 +69,7 @@ router.put('/board/:id', (req, res, next) => {
   const updBoard = {};
 
   if (board.title) {
-    updBoard.title = title;
+    updBoard.title = board.title;
   }
 
   if (board.content) {
@@ -77,7 +79,7 @@ router.put('/board/:id', (req, res, next) => {
   if (!board) {
     res.status(400).send('잘못된 요청');
   } else {
-    db.boards.update({_id: mongojs.ObjectId(req.params.id)}, updBoard, {}, (err, board) => {
+    Board.update({_id: mongojs.ObjectId(req.params.id)}, updBoard, {}, (err, data) => {
       if(err){
           res.send(err);
       }
@@ -88,13 +90,12 @@ router.put('/board/:id', (req, res, next) => {
 
 router.delete('/board/:id', (req, res, next) => {
 
-  db.boards.removee({_id: mongojs.ObjectId(req.params.id)}, function(err, board){
+  Board.remove({_id: mongojs.ObjectId(req.params.id)}, function(err, board){
     if(err){
         res.send(err);
     }
     res.json(board);
   });
-  res.status(200).send('board-detailt' + req.params.id);
 });
 
 module.exports = router;
